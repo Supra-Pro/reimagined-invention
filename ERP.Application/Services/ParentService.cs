@@ -24,7 +24,7 @@ public class ParentService : IParentService
             {
                 Id = parentDto.Students.First().Id,
                 Name = parentDto.Students.First().Name,
-                Phone = parentDto.Students.First().PhoneNumber
+                Phone = parentDto.Students.First().Phone
             } : null
         };
 
@@ -44,7 +44,7 @@ public class ParentService : IParentService
             existingParent.Student ??= new Student();
             existingParent.Student.Id = parentDto.Students.First().Id;
             existingParent.Student.Name = parentDto.Students.First().Name;
-            existingParent.Student.Phone = parentDto.Students.First().PhoneNumber;
+            existingParent.Student.Phone = parentDto.Students.First().Phone;
         }
 
         await _parentRepository.Update(existingParent);

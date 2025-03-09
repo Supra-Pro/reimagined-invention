@@ -16,18 +16,29 @@ namespace ERP.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateFeePayment([FromBody] CreateFeePaymentDto feePaymentDto)
+        public async Task<IActionResult> CreateFeePayment(CreateFeePaymentDto feePaymentDto)
         {
             if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
                 return BadRequest(ModelState);
+            }
 
             var result = await _feePaymentService.CreatePayment(feePaymentDto);
             return CreatedAtAction(nameof(GetFeePaymentById), new { id = result.Id }, result);
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateFeePayment(int id, [FromBody] UpdateFeePaymentDto feePaymentDto)
+        public async Task<IActionResult> UpdateFeePayment(int id, UpdateFeePaymentDto feePaymentDto)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
+                return BadRequest(ModelState);
+            }
+
             var result = await _feePaymentService.UpdatePayment(id, feePaymentDto);
             if (!result) return NotFound();
             return NoContent();

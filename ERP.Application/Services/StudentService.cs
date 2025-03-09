@@ -22,7 +22,7 @@ public class StudentService : IStudentService
         {
             Name = studentDto.Name,
             Code = studentDto.Code,
-            Phone = studentDto.PhoneNumber,
+            Phone = studentDto.Phone,
             Dob = studentDto.Dob,
             Email = studentDto.Email,
             EnrollmentDate = studentDto.EnrollmentDate,
@@ -63,6 +63,12 @@ public class StudentService : IStudentService
         return (await _studentRepository.GetAll()).ToList();
     }
 
+    public async Task<List<Student>> GetByEnrollmentDate(string date)
+    {
+        var allStudents = await _studentRepository.GetAll();
+        return allStudents.Where(x => x.EnrollmentDate == date).ToList();
+    }
+
     public async Task<List<Student>> GetByStatus(string status)
     {
         var allStudents = await _studentRepository.GetAll();
@@ -73,12 +79,6 @@ public class StudentService : IStudentService
     {
         var allStudents = await _studentRepository.GetAll();
         return allStudents.Where(x => x.Code == code).ToList();
-    }
-
-    public async Task<List<Student>> GetByEnrollmentDate(string date)
-    {
-        var allStudents = await _studentRepository.GetAll();
-        return allStudents.Where(x => x.EnrollmentDate == date).ToList();
     }
 
     public async Task<List<Student>> GetByCourse(int courseId)

@@ -18,10 +18,6 @@ namespace ERP.Application.Services
 
         public async Task<FeePaymentResponseDto> CreatePayment(CreateFeePaymentDto feePaymentDto)
         {
-            var student = await _studentRepository.GetByAny(s => s.Id == feePaymentDto.StudentId);
-            if (student == null)
-                throw new ArgumentException("Student not found.");
-
             var feePayment = new FeePayement
             {
                 StudentId = feePaymentDto.StudentId,

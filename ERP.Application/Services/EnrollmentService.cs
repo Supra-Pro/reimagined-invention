@@ -1,6 +1,7 @@
 using ERP.Application.Abstractions.IServices;
 using ERP.Application.Abstractions.IServices.IServices;
 using ERP.Domain;
+using ERP.Domain.DTOs;
 
 namespace ERP.Application.Services;
 
@@ -20,20 +21,20 @@ public class EnrollmentService : IEnrollmentService
         _studentRepository = studentRepository;
     }
 
-    public async Task<Enrollment> EnrollStudent(int studentId, int courseId)
+    public async Task<EnrollmentResponseDto> EnrollStudent(int studentId, int courseId)
     {
         var student = await _studentRepository.GetByAny(s => s.Id == studentId);
         if (student == null)
             throw new ArgumentException("Student not found.");
-
+        
         var course = await _courseRepository.GetByAny(c => c.Id == courseId);
         if (course == null)
             throw new ArgumentException("Course not found.");
-
+        
         var existingEnrollment = await _enrollmentRepository.GetByAny(e => e.StudentId == studentId && e.CourseId == courseId);
         if (existingEnrollment != null)
             throw new InvalidOperationException("Student is already enrolled in this course.");
-
+        
         var enrollment = new Enrollment
         {
             StudentId = studentId,
@@ -42,7 +43,16 @@ public class EnrollmentService : IEnrollmentService
             Status = "Enrolled"
         };
 
-        return await _enrollmentRepository.Create(enrollment);
+        var createdEnrollment = await _enrollmentRepository.Create(enrollment);
+
+        return new EnrollmentResponseDto
+        {
+            Id = createdEnrollment.Id,
+            StudentId = createdEnrollment.StudentId,
+            CourseId = createdEnrollment.CourseId,
+            EnrollDate = createdEnrollment.EnrollDate,
+            Status = createdEnrollment.Status
+        };
     }
 
     public async Task<bool> UnenrollStudent(int studentId, int courseId)
